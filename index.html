@@ -1,0 +1,1057 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+<title>스태미나 물약 계산기</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<style>
+
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap');
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Nunito', sans-serif;
+}
+
+body{
+    background:#0f172a;
+    color:white;
+    padding:30px;
+}
+
+.container{
+    max-width:1450px;
+    margin:auto;
+}
+
+.title{
+    font-size:42px;
+    font-weight:800;
+    margin-bottom:10px;
+}
+
+.sub{
+    color:#94a3b8;
+    margin-bottom:35px;
+    font-size:16px;
+}
+
+.grid{
+    display:grid;
+    grid-template-columns:420px 1fr;
+    gap:25px;
+}
+
+.card{
+    background:#1e293b;
+    border-radius:28px;
+    padding:28px;
+    box-shadow:0 10px 35px rgba(0,0,0,0.3);
+}
+
+.card-title{
+    font-size:26px;
+    font-weight:800;
+    margin-bottom:24px;
+}
+
+.input-group{
+    margin-bottom:18px;
+}
+
+label{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:8px;
+    color:#cbd5e1;
+    font-weight:700;
+}
+
+.label-img{
+    width:26px;
+    height:26px;
+    object-fit:contain;
+}
+
+input{
+    width:100%;
+    border:none;
+    outline:none;
+    background:#334155;
+    color:white;
+    padding:15px;
+    border-radius:16px;
+    font-size:16px;
+}
+
+.potion-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:15px;
+}
+
+/* 버튼 */
+
+button{
+    width:100%;
+    margin-top:16px;
+    border:none;
+    background:#2563eb;
+    color:white;
+    padding:14px;
+    border-radius:16px;
+    font-size:16px;
+    font-weight:700;
+    cursor:pointer;
+    transition:0.2s;
+}
+
+button:hover{
+    background:#1d4ed8;
+    transform:translateY(-1px);
+}
+
+.calc-btn{
+    background:#0f172a;
+    border:1px solid #334155;
+}
+
+.calc-btn:hover{
+    background:#1e293b;
+}
+
+.add-btn{
+    width:100%;
+    height:42px;
+    background:#334155;
+    color:#cbd5e1;
+    border:1px dashed #64748b;
+    border-radius:14px;
+    font-size:22px;
+    font-weight:600;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    margin-top:10px;
+    transition:0.2s;
+}
+
+.add-btn:hover{
+    background:#3b4758;
+    border-color:#94a3b8;
+    transform:none;
+}
+
+.remove-btn{
+    width:52px;
+    height:52px;
+    background:#ef4444;
+    border:none;
+    border-radius:14px;
+    color:white;
+    font-size:20px;
+    cursor:pointer;
+    flex-shrink:0;
+}
+
+/* 결과 카드 */
+
+.result-card{
+    background:#111827;
+    border-radius:24px;
+    padding:24px;
+    margin-bottom:20px;
+    border:2px solid #334155;
+}
+
+.rank{
+    display:inline-block;
+    background:#2563eb;
+    padding:6px 14px;
+    border-radius:999px;
+    font-size:14px;
+    font-weight:800;
+    margin-bottom:18px;
+}
+
+.combo{
+    display:flex;
+    flex-wrap:wrap;
+    gap:12px;
+    margin-bottom:18px;
+}
+
+.combo-item{
+    background:#1e293b;
+    border:1px solid #334155;
+    border-radius:18px;
+    padding:10px 14px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-weight:700;
+}
+
+.combo-item img{
+    width:42px;
+    height:42px;
+    object-fit:contain;
+}
+
+.profit{
+    font-size:28px;
+    font-weight:800;
+    margin-bottom:14px;
+}
+
+.positive-profit{
+    color:#22c55e;
+}
+
+.negative-profit{
+    color:#ef4444;
+}
+
+.detail{
+    color:#cbd5e1;
+    line-height:2;
+}
+
+.section{
+    margin-top:28px;
+}
+
+.dynamic-row{
+    display:flex;
+    gap:12px;
+    margin-bottom:14px;
+    align-items:center;
+}
+
+/* 커스텀 셀렉트 */
+
+.custom-select{
+    position:relative;
+    flex:1;
+    min-width:190px;
+}
+
+.selected-option{
+    background:#334155;
+    border-radius:16px;
+    padding:13px 16px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    cursor:pointer;
+    user-select:none;
+    min-height:56px;
+    overflow:hidden;
+}
+
+.selected-option img{
+    width:34px;
+    height:34px;
+    object-fit:contain;
+    flex-shrink:0;
+}
+
+.selected-option span{
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    font-weight:700;
+}
+
+.option-list{
+    position:absolute;
+    width:100%;
+    background:#1e293b;
+    border:1px solid #475569;
+    border-radius:18px;
+    overflow:hidden;
+    margin-top:8px;
+    display:none;
+    z-index:100;
+}
+
+.option-item{
+    padding:12px 14px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    cursor:pointer;
+    transition:0.2s;
+}
+
+.option-item:hover{
+    background:#334155;
+}
+
+.option-item img{
+    width:34px;
+    height:34px;
+    object-fit:contain;
+    flex-shrink:0;
+}
+
+.option-item span{
+    white-space:nowrap;
+    font-weight:700;
+}
+
+/* 원하는 배합 */
+
+.custom-layout{
+    display:grid;
+    grid-template-columns:350px 1fr;
+    gap:24px;
+}
+
+.custom-result-big{
+    background:#111827;
+    border-radius:24px;
+    padding:28px;
+    border:2px solid #334155;
+}
+
+/* 비교 */
+
+.compare-layout{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:24px;
+}
+
+.compare-panel{
+    background:#111827;
+    padding:24px;
+    border-radius:24px;
+}
+
+.compare-panel h3{
+    margin-bottom:18px;
+    font-size:24px;
+}
+
+.compare-result-box{
+    margin-top:20px;
+    background:#0f172a;
+    border-radius:20px;
+    padding:20px;
+    line-height:2;
+}
+
+/* 색상 */
+
+.good{
+    color:#22c55e;
+    font-weight:800;
+}
+
+.bad{
+    color:#ef4444;
+    font-weight:800;
+}
+
+.neutral{
+    color:#facc15;
+    font-weight:800;
+}
+
+/* 반응형 */
+
+@media(max-width:1000px){
+
+    .grid{
+        grid-template-columns:1fr;
+    }
+
+    .compare-layout{
+        grid-template-columns:1fr;
+    }
+
+    .custom-layout{
+        grid-template-columns:1fr;
+    }
+
+}
+
+.footer{
+    margin-top:60px;
+    padding-top:20px;
+    border-top:1px solid #334155;
+    text-align:center;
+    opacity:0.7;
+}
+
+.footer-title{
+    font-size:14px;
+    font-weight:700;
+    color:#cbd5e1;
+    margin-bottom:6px;
+}
+
+.footer-desc{
+    font-size:12px;
+    color:#94a3b8;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="title">
+        별⭐찌 마을 스태미나 효율 계산기
+    </div>
+
+    <div class="sub">
+        무단 배포 금지 / 2025-05-12 18:00 기준 시세 반영
+    </div>
+
+    <!-- 상단 -->
+
+    <div class="grid">
+
+        <div class="card">
+
+            <div class="card-title">
+                기본 설정
+            </div>
+
+            <div class="input-group">
+                <label>스태미나 100당 수익</label>
+                <input type="number" id="profitPer100" value="0">
+            </div>
+
+            <div class="potion-grid">
+
+                <div class="input-group">
+                    <label>
+                        <img class="label-img" src="img/stamina1.png">
+                        스태미나 1 가격
+                    </label>
+                    <input type="number" id="p1" value="24000">
+                </div>
+
+                <div class="input-group">
+                    <label>
+                        <img class="label-img" src="img/stamina2.png">
+                        스태미나 2 가격
+                    </label>
+                    <input type="number" id="p2" value="120000">
+                </div>
+
+                <div class="input-group">
+                    <label>
+                        <img class="label-img" src="img/stamina3.png">
+                        스태미나 3 가격
+                    </label>
+                    <input type="number" id="p3" value="280000">
+                </div>
+
+                <div class="input-group">
+                    <label>
+                        <img class="label-img" src="img/stamina4.png">
+                        스태미나 4 가격
+                    </label>
+                    <input type="number" id="p4" value="720000">
+                </div>
+
+                <div class="input-group">
+                    <label>
+                        <img class="label-img" src="img/stamina5.png">
+                        스태미나 5 가격
+                    </label>
+                    <input type="number" id="p5" value="2000000">
+                </div>
+
+            </div>
+
+            <button onclick="calculateTop3()">
+                TOP 3 계산하기
+            </button>
+
+        </div>
+
+        <div class="card">
+
+            <div class="card-title">
+                추천 조합 TOP 3
+            </div>
+
+            <div id="results"></div>
+
+        </div>
+
+    </div>
+
+    <!-- 원하는 배합 -->
+
+    <div class="card section">
+
+        <div class="card-title">
+            스태미나 효율 계산
+        </div>
+
+        <div class="custom-layout">
+
+            <div>
+
+                <div id="customContainer"></div>
+
+                <button class="add-btn" onclick="addCustomRow()">
+                    +
+                </button>
+
+                <button class="calc-btn" onclick="calculateCustomAdvanced()">
+                    계산하기
+                </button>
+
+            </div>
+
+            <div
+                class="custom-result-big"
+                id="customResult"
+            ></div>
+
+        </div>
+
+    </div>
+
+    <!-- 비교 -->
+
+    <div class="card section">
+
+        <div class="card-title">
+            스태미나 효율 비교
+        </div>
+
+        <div class="compare-layout">
+
+            <div class="compare-panel">
+
+                <h3></h3>
+
+                <div id="compareA"></div>
+
+                <button class="add-btn" onclick="addCompareRow('A')">
+                    +
+                </button>
+
+                <button class="calc-btn" onclick="compareAdvanced()">
+                    계산하기
+                </button>
+
+                <div class="compare-result-box" id="compareAResult"></div>
+
+            </div>
+
+            <div class="compare-panel">
+
+                <h3></h3>
+
+                <div id="compareB"></div>
+
+                <button class="add-btn" onclick="addCompareRow('B')">
+                    +
+                </button>
+
+                <button class="calc-btn" onclick="compareAdvanced()">
+                    계산하기
+                </button>
+
+                <div class="compare-result-box" id="compareBResult"></div>
+
+            </div>
+
+        </div>
+
+    </div>
+    <div class="footer">
+    <div class="footer-inner">
+        <div class="footer-title">Made by busi</div>
+        <div class="footer-desc">
+            ※ 해당 계산기는 데이터 수집 목적으로 사용자 데이터 일부를 사용할 수 있습니다.
+        </div>
+    </div>
+</div>
+
+</div>
+
+<script>
+
+const staminaValues = [100,300,500,700,1000];
+
+const potionImages = [
+    "img/stamina1.png",
+    "img/stamina2.png",
+    "img/stamina3.png",
+    "img/stamina4.png",
+    "img/stamina5.png"
+];
+
+function getPrices(){
+
+    return [
+        Number(document.getElementById("p1").value),
+        Number(document.getElementById("p2").value),
+        Number(document.getElementById("p3").value),
+        Number(document.getElementById("p4").value),
+        Number(document.getElementById("p5").value)
+    ];
+
+}
+
+function getProfitPer100(){
+
+    return Number(document.getElementById("profitPer100").value);
+
+}
+
+function calc(combo){
+
+    const prices = getPrices();
+    const profitPer100 = getProfitPer100();
+
+    let stamina = 0;
+    let cost = 0;
+
+    for(let i=0;i<5;i++){
+
+        stamina += combo[i] * staminaValues[i];
+        cost += combo[i] * prices[i];
+
+    }
+
+    const revenue = (stamina / 100) * profitPer100;
+    const profit = revenue - cost;
+
+    return {
+        stamina,
+        cost,
+        revenue,
+        profit
+    };
+
+}
+
+function comboText(combo){
+
+    let html = "";
+
+    combo.forEach((count,index)=>{
+
+        if(count <= 0) return;
+
+        html += `
+            <div class="combo-item">
+
+                <img src="${potionImages[index]}">
+
+                <span>
+                    스태미나 ${index+1} x ${count}
+                </span>
+
+            </div>
+        `;
+
+    });
+
+    return html;
+
+}
+
+/* TOP3 */
+
+function calculateTop3(){
+
+    let arr = [];
+
+    for(let a=0;a<=5;a++){
+    for(let b=0;b<=5;b++){
+    for(let c=0;c<=5;c++){
+    for(let d=0;d<=5;d++){
+    for(let e=0;e<=5;e++){
+
+        if(a+b+c+d+e !== 5) continue;
+
+        const combo = [a,b,c,d,e];
+        const result = calc(combo);
+
+        arr.push({
+            combo,
+            ...result
+        });
+
+    }}}}}
+
+    arr.sort((x,y)=>y.profit-x.profit);
+
+    const top3 = arr.slice(0,3);
+
+    const results = document.getElementById("results");
+
+    results.innerHTML = "";
+
+    top3.forEach((item,index)=>{
+
+        const profitClass =
+            item.profit < 0
+            ? "negative-profit"
+            : "positive-profit";
+
+        results.innerHTML += `
+            <div class="result-card">
+
+                <div class="rank">
+                    TOP ${index+1}
+                </div>
+
+                <div class="combo">
+                    ${comboText(item.combo)}
+                </div>
+
+                <div class="profit ${profitClass}">
+                    ${Math.floor(item.profit).toLocaleString()} 원
+                </div>
+
+                <div class="detail">
+                    총 스태미나 : ${item.stamina.toLocaleString()}<br>
+                    총 비용 : ${Math.floor(item.cost).toLocaleString()} 원<br>
+                    총 수익 : ${Math.floor(item.revenue).toLocaleString()} 원
+                </div>
+
+            </div>
+        `;
+    });
+
+}
+
+/* 커스텀 셀렉트 */
+
+function createCustomSelect(type){
+
+    return `
+        <div class="custom-select">
+
+            <div class="selected-option">
+                <img src="img/stamina1.png">
+                <span>스태미나 1</span>
+            </div>
+
+            <div class="option-list">
+
+                ${[1,2,3,4,5].map((num,index)=>`
+
+                    <div class="option-item" data-value="${index}">
+
+                        <img src="img/stamina${num}.png">
+
+                        <span>스태미나 ${num}</span>
+
+                    </div>
+
+                `).join("")}
+
+            </div>
+
+            <input type="hidden" class="${type}-potion" value="0">
+
+        </div>
+    `;
+
+}
+
+function setupCustomSelect(select){
+
+    const selected = select.querySelector(".selected-option");
+    const optionList = select.querySelector(".option-list");
+    const hidden = select.querySelector("input");
+
+    selected.onclick = ()=>{
+
+        document.querySelectorAll(".option-list").forEach(v=>{
+
+            if(v !== optionList){
+                v.style.display = "none";
+            }
+
+        });
+
+        optionList.style.display =
+            optionList.style.display === "block"
+            ? "none"
+            : "block";
+
+    };
+
+    select.querySelectorAll(".option-item").forEach(item=>{
+
+        item.onclick = ()=>{
+
+            const value = item.dataset.value;
+            const img = item.querySelector("img").src;
+            const text = item.querySelector("span").innerText;
+
+            hidden.value = value;
+
+            selected.innerHTML = `
+                <img src="${img}">
+                <span>${text}</span>
+            `;
+
+            optionList.style.display = "none";
+
+        };
+
+    });
+
+}
+
+/* 행 생성 */
+
+function createRow(type){
+
+    const row = document.createElement("div");
+
+    row.className = "dynamic-row";
+
+    row.innerHTML = `
+        ${createCustomSelect(type)}
+
+        <input
+            type="number"
+            class="${type}-count"
+            placeholder="개수"
+            min="1"
+            max="5"
+        >
+
+        <button class="remove-btn">
+            -
+        </button>
+    `;
+
+    setupCustomSelect(
+        row.querySelector(".custom-select")
+    );
+
+    row.querySelector(".remove-btn").onclick = () => {
+        row.remove();
+    };
+
+    return row;
+}
+
+/* 원하는 배합 */
+
+function addCustomRow(){
+
+    document
+    .getElementById("customContainer")
+    .appendChild(createRow("custom"));
+
+}
+
+function calculateCustomAdvanced(){
+
+    const potions = document.querySelectorAll(".custom-potion");
+    const counts = document.querySelectorAll(".custom-count");
+
+    let combo = [0,0,0,0,0];
+    let total = 0;
+
+    for(let i=0;i<potions.length;i++){
+
+        const potion = Number(potions[i].value);
+        const count = Number(counts[i].value || 0);
+
+        combo[potion] += count;
+        total += count;
+
+    }
+
+    if(total > 5){
+
+        document.getElementById("customResult").innerHTML = `
+            <span class="bad">
+                총 개수가 5를 초과했습니다.
+            </span>
+        `;
+
+        return;
+    }
+
+    const result = calc(combo);
+
+    const profitClass =
+        result.profit < 0
+        ? "negative-profit"
+        : "positive-profit";
+
+    document.getElementById("customResult").innerHTML = `
+
+        <div class="combo">
+            ${comboText(combo)}
+        </div>
+
+        <div class="profit ${profitClass}">
+            ${Math.floor(result.profit).toLocaleString()} 원
+        </div>
+
+        <div class="detail">
+
+            총 스태미나 : ${result.stamina.toLocaleString()}<br>
+            총 비용 : ${Math.floor(result.cost).toLocaleString()} 원<br>
+            총 수익 : ${Math.floor(result.revenue).toLocaleString()} 원
+
+        </div>
+    `;
+}
+
+/* 비교 */
+
+function addCompareRow(side){
+
+    document
+    .getElementById(`compare${side}`)
+    .appendChild(createRow(side));
+
+}
+
+function getCompareCombo(side){
+
+    const potions = document.querySelectorAll(`.${side}-potion`);
+    const counts = document.querySelectorAll(`.${side}-count`);
+
+    let combo = [0,0,0,0,0];
+
+    for(let i=0;i<potions.length;i++){
+
+        const potion = Number(potions[i].value);
+        const count = Number(counts[i].value || 0);
+
+        combo[potion] += count;
+
+    }
+
+    return combo;
+}
+
+function renderCompareResult(id, combo, result, opponent){
+
+    const profitCompareClass =
+        result.profit > opponent.profit ? "good" :
+        result.profit < opponent.profit ? "bad" : "neutral";
+
+    const staminaClass =
+        result.stamina > opponent.stamina ? "good" :
+        result.stamina < opponent.stamina ? "bad" : "neutral";
+
+    const costClass =
+        result.cost < opponent.cost ? "good" :
+        result.cost > opponent.cost ? "bad" : "neutral";
+
+    const realProfitColor =
+        result.profit < 0
+        ? "negative-profit"
+        : "positive-profit";
+
+    document.getElementById(id).innerHTML = `
+
+        <div class="combo">
+            ${comboText(combo)}
+        </div>
+
+        <span class="${profitCompareClass} ${realProfitColor}">
+            순이익 : ${Math.floor(result.profit).toLocaleString()} 원
+        </span><br>
+
+        <span class="${staminaClass}">
+            총 스태미나 : ${result.stamina.toLocaleString()}
+        </span><br>
+
+        <span class="${costClass}">
+            총 비용 : ${Math.floor(result.cost).toLocaleString()} 원
+        </span><br>
+
+        총 수익 : ${Math.floor(result.revenue).toLocaleString()} 원
+
+    `;
+}
+
+function compareAdvanced(){
+
+    const comboA = getCompareCombo("A");
+    const comboB = getCompareCombo("B");
+
+    const totalA = comboA.reduce((a,b)=>a+b,0);
+    const totalB = comboB.reduce((a,b)=>a+b,0);
+
+    if(totalA > 5 || totalB > 5){
+
+        alert("총 개수가 5를 초과했습니다.");
+        return;
+
+    }
+
+    const resultA = calc(comboA);
+    const resultB = calc(comboB);
+
+    renderCompareResult(
+        "compareAResult",
+        comboA,
+        resultA,
+        resultB
+    );
+
+    renderCompareResult(
+        "compareBResult",
+        comboB,
+        resultB,
+        resultA
+    );
+
+}
+
+/* 외부 클릭 시 닫기 */
+
+document.addEventListener("click",(e)=>{
+
+    if(!e.target.closest(".custom-select")){
+
+        document.querySelectorAll(".option-list").forEach(v=>{
+
+            v.style.display = "none";
+
+        });
+
+    }
+
+});
+
+/* 초기 실행 */
+
+addCustomRow();
+
+addCompareRow("A");
+addCompareRow("B");
+
+calculateTop3();
+
+</script>
+
+</body>
+</html>
